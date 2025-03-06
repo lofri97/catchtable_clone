@@ -1,0 +1,47 @@
+
+dependencies {
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.18.2'
+}
+
+openapi3 {
+    server = 'http://localhost:8080'
+    title = 'Catch table clone'
+    description = 'Catch table description'
+    version = '0.0.1'
+    format = 'yaml'
+    outputFileNamePrefix = "openapi"
+}
+
+
+def groupName = "redoc_documentation"
+
+tasks.register('openapifix', Exec) {
+    group groupName
+    commandLine 'cmd', '/c', 'python3', './fix-openapi-yaml.py', 'build/api-spec/openapi.yaml'
+    standardOutput = new ByteArrayOutputStream()
+
+    doLast { // 작업 실행 블록의 시작
+        def outputStream = new FileOutputStream('build/api-spec/openapi-fixed.yaml')
+        outputStream.write(standardOutput.toString().getBytes())
+        outputStream.close()
+
+        def processResult = standardOutput.toString()
+        if (processResult.contains('Traceback') || processResult.contains('Error')) {
+            println "Openapi fix error"
+        } else {
+            println "Openapi fix completed"
+        }
+    }
+
+    finalizedBy {
+        tasks.findAll {task -> task.name.startsWith('openapi3')}
+    }
+}
+
+tasks.register('generateRedoc', Exec) {
+    group groupName
+    dependsOn openapifix
+    commandLine 'cmd', '/c', 'npx', '@redocly/cli', 'build-docs', './build/api-spec/openapi-fixed.yaml', '-o', 'src/main/resources/static/docs.html'
+}
+
