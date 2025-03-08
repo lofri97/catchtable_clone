@@ -1,7 +1,7 @@
 package com.lofri.catchtable.domain.restaurant.dto.restaurant;
 
-import com.lofri.catchtable.domain.restaurant.dto.reservation.SimpleAvailReserveDetail;
-import com.lofri.catchtable.domain.restaurant.dto.menu.SimpleRateDetail;
+import com.lofri.catchtable.domain.reservation.SimpleAvailReserveDetail;
+import com.lofri.catchtable.domain.menu.SimpleRateDetail;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

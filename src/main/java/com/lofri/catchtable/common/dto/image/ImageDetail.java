@@ -8,5 +8,4 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ImageDetail {
     private String src;
-    private String type;
 }

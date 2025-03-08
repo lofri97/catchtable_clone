@@ -1,16 +1,14 @@
 package com.lofri.catchtable.domain.user.dto;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import com.lofri.catchtable.common.dto.image.ImageDetail;
+import lombok.*;
 
 @Getter
-@SuperBuilder
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SimpleUserDetail {
-    private long id;
-    private String name;
+    protected long id;
+    protected String name;
+    protected ImageDetail image;
 }

@@ -1,4 +1,4 @@
-package com.lofri.catchtable.domain.restaurant.dto.menu;
+package com.lofri.catchtable.domain.menu;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

@@ -1,4 +1,4 @@
-package com.lofri.catchtable.domain.restaurant.dto.menu;
+package com.lofri.catchtable.domain.menu;
 
 import com.lofri.catchtable.common.dto.image.ImageDetail;
 import lombok.*;

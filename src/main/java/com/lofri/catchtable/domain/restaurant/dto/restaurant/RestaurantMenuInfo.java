@@ -1,6 +1,6 @@
 package com.lofri.catchtable.domain.restaurant.dto.restaurant;
 
-import com.lofri.catchtable.domain.restaurant.dto.menu.MenuInfo;
+import com.lofri.catchtable.domain.menu.MenuInfo;
 import lombok.*;
 
 import java.time.LocalDate;

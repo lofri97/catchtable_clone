@@ -1,4 +1,4 @@
-package com.lofri.catchtable.domain.restaurant.dto.reservation;
+package com.lofri.catchtable.domain.reservation;
 
 import lombok.*;
 

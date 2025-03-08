@@ -2,8 +2,8 @@ package com.lofri.catchtable.domain.restaurant.dto.restaurant;
 
 import com.lofri.catchtable.common.dto.image.ImageDetail;
 import com.lofri.catchtable.common.dto.image.SimpleImageInfo;
-import com.lofri.catchtable.domain.restaurant.dto.review.SimpleReviewInfo;
-import com.lofri.catchtable.domain.restaurant.dto.menu.SimpleMenuInfo;
+import com.lofri.catchtable.domain.review.dto.SimpleReviewInfo;
+import com.lofri.catchtable.domain.menu.SimpleMenuInfo;
 import lombok.*;
 
 import java.util.List;

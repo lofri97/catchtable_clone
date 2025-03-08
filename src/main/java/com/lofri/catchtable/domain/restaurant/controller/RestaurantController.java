@@ -1,28 +1,22 @@
 package com.lofri.catchtable.domain.restaurant.controller;
 
-import com.lofri.catchtable.domain.restaurant.dto.menu.MenuDetail;
-import com.lofri.catchtable.domain.restaurant.dto.restaurant.RestaurantInfo;
-import com.lofri.catchtable.domain.restaurant.dto.restaurant.RestaurantMenuInfo;
-import com.lofri.catchtable.domain.restaurant.dto.restaurant.SimpleRestaurantInfo;
-import com.lofri.catchtable.domain.restaurant.dto.review.ReviewInfo;
+import com.lofri.catchtable.domain.menu.MenuDetail;
+import com.lofri.catchtable.domain.restaurant.dto.restaurant.*;
+import com.lofri.catchtable.domain.review.dto.ReviewInfo;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/v1/restaurants")
 public class RestaurantController {
 
     @GetMapping
-    public List<SimpleRestaurantInfo> retrieveRestaurantInfos(@RequestParam(required = false) List<String> regions,
-                                                              @RequestParam(required = false) List<String> foodTypes,
-                                                              @RequestParam(required = false, defaultValue = "0") int minimumPrice,
-                                                              @RequestParam(required = false, defaultValue = "1000000000") int maximumPrice) {
+    public ResponseEntity<GetRestaurantsResponse> getRestaurants(GetRestaurantsParameter parameter) {
         return null;
     }
 
     @GetMapping("/{restId}")
-    public RestaurantInfo retrieveRestaurantInfo(@PathVariable long restId) {
+    public RestaurantInfo getRestaurant(@PathVariable long restId) {
 
         return null;
     }
@@ -42,6 +36,13 @@ public class RestaurantController {
     public ReviewInfo retrieveReviewInfo(@PathVariable long restId,
                                          @RequestParam(defaultValue = "ALL") String type,
                                          @RequestParam(defaultValue = "BEST") String orderBy) {
+        return null;
+    }
+
+    @GetMapping("/{restId}/reservations")
+    public ResponseEntity<GetRestaurantAvailReservationsResponse> getRestaurantAvailReservations(@PathVariable long restId,
+                                                                                                 @RequestParam String date,
+                                                                                                 @RequestParam Integer num) {
         return null;
     }
 }

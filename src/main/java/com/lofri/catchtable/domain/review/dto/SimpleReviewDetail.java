@@ -1,4 +1,4 @@
-package com.lofri.catchtable.domain.restaurant.dto.review;
+package com.lofri.catchtable.domain.review.dto;
 
 import com.lofri.catchtable.common.dto.image.ImageDetail;
 import com.lofri.catchtable.domain.user.dto.SimpleUserDetail;
