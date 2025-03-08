@@ -3,7 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '3.4.3'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'org.asciidoctor.jvm.convert' version '3.3.2'
-	id 'com.epages.restdocs-api-spec' version '0.18.2'
+	id 'com.epages.restdocs-api-spec' version '0.19.4'
 }
 
 group = 'com.lofri'
@@ -40,6 +40,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testCompileOnly'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 	// documentation

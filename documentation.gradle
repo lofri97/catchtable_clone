@@ -5,11 +5,19 @@ dependencies {
 }
 
 openapi3 {
-    server = 'http://localhost:8080'
-    title = 'Catch table clone'
-    description = 'Catch table description'
+    servers = [
+            {url = "http://localhost:8080"}
+    ]
+    title = 'CatchTable backend clone'
+    description = '캐치테이블 백엔드 클론 코딩 API 명세서'
     version = '0.0.1'
     format = 'yaml'
+
+    contact = {
+        name = '임경익'
+        email = 'lofri97@gmail.com'
+    }
+
     outputFileNamePrefix = "openapi"
 }
 
@@ -18,6 +26,7 @@ def groupName = "redoc_documentation"
 
 tasks.register('openapifix', Exec) {
     group groupName
+    dependsOn('openapi3')
     commandLine 'cmd', '/c', 'python3', './fix-openapi-yaml.py', 'build/api-spec/openapi.yaml'
     standardOutput = new ByteArrayOutputStream()
 
@@ -32,10 +41,6 @@ tasks.register('openapifix', Exec) {
         } else {
             println "Openapi fix completed"
         }
-    }
-
-    finalizedBy {
-        tasks.findAll {task -> task.name.startsWith('openapi3')}
     }
 }
 
