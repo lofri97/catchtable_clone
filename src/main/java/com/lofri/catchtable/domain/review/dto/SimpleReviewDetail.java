@@ -1,6 +1,6 @@
 package com.lofri.catchtable.domain.review.dto;
 
-import com.lofri.catchtable.common.dto.image.ImageDetail;
+import com.lofri.catchtable.common.dto.ImageDetail;
 import com.lofri.catchtable.domain.user.dto.SimpleUserDetail;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

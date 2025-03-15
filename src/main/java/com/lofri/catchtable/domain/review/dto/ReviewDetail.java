@@ -1,7 +1,7 @@
 package com.lofri.catchtable.domain.review.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.lofri.catchtable.common.dto.image.ImageDetail;
+import com.lofri.catchtable.common.dto.ImageDetail;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

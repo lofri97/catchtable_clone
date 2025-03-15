@@ -1,6 +1,6 @@
 package com.lofri.catchtable.domain.user.dto;
 
-import com.lofri.catchtable.common.dto.image.ImageDetail;
+import com.lofri.catchtable.common.dto.ImageDetail;
 import lombok.*;
 
 @Getter

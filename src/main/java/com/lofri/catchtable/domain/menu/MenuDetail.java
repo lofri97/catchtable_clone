@@ -1,6 +1,6 @@
 package com.lofri.catchtable.domain.menu;
 
-import com.lofri.catchtable.common.dto.image.ImageDetail;
+import com.lofri.catchtable.common.dto.ImageDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

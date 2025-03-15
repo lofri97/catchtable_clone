@@ -2,14 +2,15 @@ package com.lofri.catchtable.domain.collection.controller;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.lofri.catchtable.common.dto.Pagination;
-import com.lofri.catchtable.domain.collection.dto.GetCollectionResponse;
+import com.lofri.catchtable.common.dto.ResponseTemplate;
 import com.lofri.catchtable.domain.collection.dto.CreateCollectionRequest;
+import com.lofri.catchtable.domain.collection.dto.GetCollectionResponse;
+import com.lofri.catchtable.domain.collection.dto.GetCollectionsResponse;
 import com.lofri.catchtable.domain.collection.dto.UpdateCollectionRequest;
-import com.lofri.catchtable.test.config.RestDocSupport;
+import com.lofri.catchtable.test.config.RestDocsSupport;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -22,10 +23,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CollectionController.class)
-class CollectionControllerTest extends RestDocSupport {
+class CollectionControllerTest extends RestDocsSupport {
 
     @MockitoBean
     private CollectionController collectionController;
@@ -40,7 +42,7 @@ class CollectionControllerTest extends RestDocSupport {
                 .build();
 
         // when
-        when(collectionController.createCollection(any())).thenReturn(ResponseEntity.ok().build());
+        when(collectionController.createCollection(any())).thenReturn(ResponseTemplate.ok());
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/collections")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -58,6 +60,91 @@ class CollectionControllerTest extends RestDocSupport {
                                 fieldWithPath("description").description("설명").optional(),
                                 fieldWithPath("public").description("공개 여부")
                         )
+                        .build()
+                )));
+    }
+
+    @Test
+    void getCollections() throws Exception {
+        // given
+        GetCollectionsResponse response = GetCollectionsResponse.builder()
+                .collections(List.of(
+                        GetCollectionsResponse.Collections.builder()
+                                .id(31)
+                                .image("http://test.image.url")
+                                .title("테스트 컬랙션 1")
+                                .itemCnt(12)
+                                .subscribedCnt(31)
+                                .isPublic(false)
+                                .build(),
+                        GetCollectionsResponse.Collections.builder()
+                                .id(1)
+                                .image("http://test.image.url")
+                                .title("테스트 컬랙션 2")
+                                .itemCnt(12)
+                                .subscribedCnt(31)
+                                .isPublic(true)
+                                .build(),
+                        GetCollectionsResponse.Collections.builder()
+                                .id(4)
+                                .image("http://test.image.url")
+                                .title("테스트 컬랙션 3")
+                                .itemCnt(3)
+                                .subscribedCnt(12)
+                                .isPublic(false)
+                                .build()
+                ))
+                .pagination(Pagination.builder()
+                        .total(20)
+                        .perPage(3)
+                        .totalPages(7)
+                        .currentPage(1)
+                        .orders(List.of(Pagination.OrderBy.builder()
+                                .type("desc")
+                                .value("recent")
+                                .build()))
+                        .build())
+                .build();
+
+        // when
+        when(collectionController.getCollections(any(), any(), any(), any(), any())).thenReturn(ResponseTemplate.ok(response));
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/collections")
+                        .queryParam("type", "user")
+                        .queryParam("user_id", "1234")
+                        .queryParam("page_size", "20")
+                        .queryParam("page_index", "1")
+                        .queryParam("order_by", "recent"))
+                .andExpect(status().isOk());
+
+        // then
+        resultActions.andDo(
+                restDocs.document(resource(ResourceSnippetParameters.builder()
+                        .tag("컬랙션")
+                        .summary("목록 조회")
+                        .description("특정 유저 또는 내 컬랙션 목록을 조회하는 API")
+                        .queryParameters(
+                                parameterWithName("type").description("조회 타입 default = self [user, subscribe, self]"),
+                                parameterWithName("user_id").description("조회 대상 유저의 ID, 조회 타입 user 의 경우 필수").optional(),
+                                parameterWithName("page_size").description("페이지 당 데이터 개수, default = 20").optional(),
+                                parameterWithName("page_index").description("페이지 번호, default = 1").optional(),
+                                parameterWithName("order_by").description("정렬 조건, default = recent, [recent, size, subscribe]").optional()
+                        )
+                        .responseFields(
+                                subsectionWithPath("status").description("응답 상태"),
+                                fieldWithPath("data.collections[]").description("Collection 정보"),
+                                fieldWithPath("data.collections[].id").description("ID"),
+                                fieldWithPath("data.collections[].title").description("제목"),
+                                fieldWithPath("data.collections[].image").description("대표 이미지"),
+                                fieldWithPath("data.collections[].itemCnt").description("포함된 매장 수"),
+                                fieldWithPath("data.collections[].subscribedCnt").description("컬랙션 구독 유저 수"),
+                                fieldWithPath("data.collections[].isPublic").description("내 컬랙션 외부 공개 여부 [내 컬랙션 조회]").optional(),
+                                fieldWithPath("data.pagination.total").description("검색 결과 총 개수"),
+                                fieldWithPath("data.pagination.perPage").description("페이지당 결과 개수"),
+                                fieldWithPath("data.pagination.currentPage").description("현재 페이지 번호"),
+                                fieldWithPath("data.pagination.totalPages").description("총 페이지 개수"),
+                                fieldWithPath("data.pagination.orders[]").description("페이지 정렬 조건"),
+                                fieldWithPath("data.pagination.orders[].value").description("정렬 조건 값"),
+                                fieldWithPath("data.pagination.orders[].type").description("desc asc"))
                         .build()
                 )));
     }
@@ -132,7 +219,7 @@ class CollectionControllerTest extends RestDocSupport {
                 .build();
 
         // when
-        when(collectionController.getCollection(anyLong())).thenReturn(ResponseEntity.ok(response));
+        when(collectionController.getCollection(anyLong())).thenReturn(ResponseTemplate.ok(response));
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/collections/{collectionId}", collectionId))
                 .andExpect(status().isOk());
 
@@ -141,32 +228,33 @@ class CollectionControllerTest extends RestDocSupport {
                 restDocs.document(resource(ResourceSnippetParameters.builder()
                         .tag("컬랙션")
                         .summary("단건 조회")
-                        .description("컬랙션 단건 조회 API")
+                        .description("특정 유저의 컬랙션 또는 내 컬랙션을 조회하는 API")
                         .responseFields(
-                                fieldWithPath("restaurants[]").description("매장 정보 목록"),
-                                fieldWithPath("restaurants[].id").description("매장 ID"),
-                                fieldWithPath("restaurants[].name").description("매장 ID"),
-                                fieldWithPath("restaurants[].description").description("매장 ID"),
-                                fieldWithPath("restaurants[].type").description("음식 유형"),
-                                fieldWithPath("restaurants[].region").description("위치"),
-                                fieldWithPath("restaurants[].note").description("내가 저장한 메모 (자기 자신의 컬랙션일 경우)").optional(),
-                                fieldWithPath("restaurants[].rate").description("별점 정보"),
-                                fieldWithPath("restaurants[].rate.avgRate").description("평균 별점"),
-                                fieldWithPath("restaurants[].rate.cnt").description("별점 개수"),
-                                fieldWithPath("restaurants[].prices[]").description("매장 가격 정보"),
-                                fieldWithPath("restaurants[].prices[].type").description("영업 시간 타입"),
-                                fieldWithPath("restaurants[].prices[].price").description("가격 정보"),
-                                fieldWithPath("restaurants[].coordinate").description("매장 좌표 정보"),
-                                fieldWithPath("restaurants[].coordinate.latitude").description("위도"),
-                                fieldWithPath("restaurants[].coordinate.longitude").description("경도"),
-                                fieldWithPath("pagination").description("페이징 정보"),
-                                fieldWithPath("pagination.total").description("검색 결과 총 개수"),
-                                fieldWithPath("pagination.perPage").description("페이지당 결과 개수"),
-                                fieldWithPath("pagination.currentPage").description("현재 페이지 번호"),
-                                fieldWithPath("pagination.totalPages").description("총 페이지 개수"),
-                                fieldWithPath("pagination.orders[]").description("페이지 정렬 조건").optional(),
-                                fieldWithPath("pagination.orders[].value").description("정렬 조건 값").optional(),
-                                fieldWithPath("pagination.orders[].type").description("desc asc").optional()
+                                subsectionWithPath("status").description("응답 상태"),
+                                fieldWithPath("data.restaurants[]").description("매장 정보 목록"),
+                                fieldWithPath("data.restaurants[].id").description("매장 ID"),
+                                fieldWithPath("data.restaurants[].name").description("매장 이름"),
+                                fieldWithPath("data.restaurants[].description").description("매장 설명"),
+                                fieldWithPath("data.restaurants[].type").description("음식 유형"),
+                                fieldWithPath("data.restaurants[].region").description("위치"),
+                                fieldWithPath("data.restaurants[].note").description("내가 저장한 메모 [내 컬랙션일 경우 제공]").optional(),
+                                fieldWithPath("data.restaurants[].rate").description("별점 정보"),
+                                fieldWithPath("data.restaurants[].rate.avgRate").description("평균 별점"),
+                                fieldWithPath("data.restaurants[].rate.cnt").description("별점 개수"),
+                                fieldWithPath("data.restaurants[].prices[]").description("매장 가격 정보"),
+                                fieldWithPath("data.restaurants[].prices[].type").description("영업 시간 타입"),
+                                fieldWithPath("data.restaurants[].prices[].price").description("가격 정보"),
+                                fieldWithPath("data.restaurants[].coordinate").description("매장 좌표 정보 [내 컬랙션일 경우 제공]").optional(),
+                                fieldWithPath("data.restaurants[].coordinate.latitude").description("위도"),
+                                fieldWithPath("data.restaurants[].coordinate.longitude").description("경도"),
+                                fieldWithPath("data.pagination").description("페이징 정보"),
+                                fieldWithPath("data.pagination.total").description("검색 결과 총 개수"),
+                                fieldWithPath("data.pagination.perPage").description("페이지당 결과 개수"),
+                                fieldWithPath("data.pagination.currentPage").description("현재 페이지 번호"),
+                                fieldWithPath("data.pagination.totalPages").description("총 페이지 개수"),
+                                fieldWithPath("data.pagination.orders[]").description("페이지 정렬 조건"),
+                                fieldWithPath("data.pagination.orders[].value").description("정렬 조건 값"),
+                                fieldWithPath("data.pagination.orders[].type").description("desc asc")
                         )
                         .build()
                 )));
@@ -183,7 +271,7 @@ class CollectionControllerTest extends RestDocSupport {
                 .build();
 
         // when
-        when(collectionController.updateCollection(any())).thenReturn(ResponseEntity.ok().build());
+        when(collectionController.updateCollection(any())).thenReturn(ResponseTemplate.ok());
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
                         .put("/api/v1/collections/{collectionId}", collectionId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -211,9 +299,9 @@ class CollectionControllerTest extends RestDocSupport {
         long collectionId = 4;
 
         // when
-        when(collectionController.deleteCollection(anyLong())).thenReturn(ResponseEntity.noContent().build());
+        when(collectionController.deleteCollection(anyLong())).thenReturn(ResponseTemplate.ok());
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/collections/{collectionId}", collectionId))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
 
         // then
         resultActions.andDo(
@@ -234,7 +322,7 @@ class CollectionControllerTest extends RestDocSupport {
         long collectionId = 123;
 
         // when
-        when(collectionController.subscribeCollection(anyLong())).thenReturn(ResponseEntity.ok().build());
+        when(collectionController.subscribeCollection(anyLong())).thenReturn(ResponseTemplate.ok());
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/collections/{collectionId}/subscribe", collectionId))
                 .andExpect(status().isOk());
 
@@ -256,9 +344,9 @@ class CollectionControllerTest extends RestDocSupport {
         long collectionId = 123;
 
         // when
-        when(collectionController.unsubscribeCollection(anyLong())).thenReturn(ResponseEntity.noContent().build());
+        when(collectionController.unsubscribeCollection(anyLong())).thenReturn(ResponseTemplate.ok());
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/collections/{collectionId}/subscribe", collectionId))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
 
         // then
         resultActions.andDo(

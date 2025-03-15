@@ -1,7 +1,7 @@
-package com.lofri.catchtable.domain.menu;
+package com.lofri.catchtable.domain.user.dto;
+
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.lofri.catchtable.common.dto.ImageDetail;
 import lombok.*;
 
 import java.util.List;
@@ -11,12 +11,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SimpleMenuDetail {
+public class GetUserResponse {
     private long id;
+    private String image;
     private String name;
     private String description;
-    private int price;
-    private String category;
-    private ImageDetail image;
-    private List<String> menuTypes;
+    private int followerCnt;
+    private int followingCnt;
+    private float avgRate;
+    private String region;
+    private List<String> preferences;
 }

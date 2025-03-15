@@ -1,10 +1,11 @@
 package com.lofri.catchtable.domain.collection.controller;
 
+import com.lofri.catchtable.common.dto.ResponseTemplate;
 import com.lofri.catchtable.domain.collection.dto.CreateCollectionRequest;
 import com.lofri.catchtable.domain.collection.dto.GetCollectionResponse;
+import com.lofri.catchtable.domain.collection.dto.GetCollectionsResponse;
 import com.lofri.catchtable.domain.collection.dto.UpdateCollectionRequest;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,33 +14,41 @@ public class CollectionController {
 
 
     @PostMapping()
-    public ResponseEntity<?> createCollection(@Valid @RequestBody CreateCollectionRequest request) {
+    public ResponseTemplate<Void> createCollection(@Valid @RequestBody CreateCollectionRequest request) {
+        return null;
+    }
+
+    @GetMapping()
+    public ResponseTemplate<GetCollectionsResponse> getCollections(@RequestParam(name = "type", required = false) String type,
+                                                                   @RequestParam(name = "user_id", required = false) String userId,
+                                                                   @RequestParam(name = "page_size", defaultValue = "20") Integer pageSize,
+                                                                   @RequestParam(name = "page_index", defaultValue = "1") Integer pageIndex,
+                                                                   @RequestParam(name = "order_by", defaultValue = "recent") String orderBy) {
         return null;
     }
 
     @GetMapping("/{collectionId}")
-    public ResponseEntity<GetCollectionResponse> getCollection(@PathVariable long collectionId) {
+    public ResponseTemplate<GetCollectionResponse> getCollection(@PathVariable long collectionId) {
         return null;
     }
 
     @PutMapping("/{collectionId}")
-    public ResponseEntity<?> updateCollection(@Valid @RequestBody UpdateCollectionRequest request) {
+    public ResponseTemplate<Void> updateCollection(@Valid @RequestBody UpdateCollectionRequest request) {
         return null;
     }
 
-
     @DeleteMapping("/{collectionId}")
-    public ResponseEntity<?> deleteCollection(@PathVariable long collectionId) {
+    public ResponseTemplate<Void> deleteCollection(@PathVariable long collectionId) {
         return null;
     }
 
     @PostMapping("/{collectionId}/subscribe")
-    public ResponseEntity<?> subscribeCollection(@PathVariable long collectionId) {
+    public ResponseTemplate<Void> subscribeCollection(@PathVariable long collectionId) {
         return null;
     }
 
     @DeleteMapping("/{collectionId}/subscribe")
-    public ResponseEntity<?> unsubscribeCollection(@PathVariable long collectionId) {
+    public ResponseTemplate<Void> unsubscribeCollection(@PathVariable long collectionId) {
         return null;
     }
 }
