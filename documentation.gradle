@@ -26,6 +26,7 @@ def groupName = "redoc_documentation"
 
 tasks.register('openapifix', Exec) {
     group groupName
+    dependsOn('clean')
     dependsOn('openapi3')
     commandLine 'cmd', '/c', 'python3', './fix-openapi-yaml.py', 'build/api-spec/openapi.yaml'
     standardOutput = new ByteArrayOutputStream()
@@ -44,9 +45,16 @@ tasks.register('openapifix', Exec) {
     }
 }
 
-tasks.register('generateRedoc', Exec) {
+tasks.register('generateRestDocRedocly', Exec) {
     group groupName
     dependsOn openapifix
     commandLine 'cmd', '/c', 'npx', '@redocly/cli', 'build-docs', './build/api-spec/openapi-fixed.yaml', '-o', 'src/main/resources/static/docs.html'
+}
+
+tasks.register('generateOpenApiRedocly', Exec) {
+    group groupName
+    dependsOn('clean')
+    dependsOn('generateOpenApiDocs')
+    commandLine 'cmd', '/c', 'npx', '@redocly/cli', 'build-docs', './build/openapi.json', '-o', 'src/main/resources/static/docs.html'
 }
 
