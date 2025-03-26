@@ -1,15 +1,11 @@
 package com.lofri.catchtable.common.code;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum TimeCode {
-    TC_01("LUNCH"),
-    TC_02("DINNER");
-
-    private final String description;
-
-    TimeCode(String description) {
-        this.description = description;
-    }
+    LUNCH,
+    DINNER
 }
