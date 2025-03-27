@@ -17,7 +17,6 @@ import java.util.List;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
@@ -156,7 +155,7 @@ class CouponControllerTest extends RestDocsSupport {
         long couponId = 4;
 
         // when
-        doReturn(ResponseTemplate.ok()).when(couponController).registerCoupon(anyLong());
+        when(couponController.registerCoupon(anyLong())).thenReturn(ResponseTemplate.ok());
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/coupons/{couponId}", couponId))
                 .andExpect(status().isOk());
 
@@ -179,7 +178,7 @@ class CouponControllerTest extends RestDocsSupport {
         long couponId = 4;
 
         // when
-        doReturn(ResponseTemplate.ok()).when(couponController).deleteCoupon(anyLong());
+        when(couponController.deleteCoupon(anyLong())).thenReturn(ResponseTemplate.ok());
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/coupons/{couponId}", couponId))
                 .andExpect(status().isOk());
 

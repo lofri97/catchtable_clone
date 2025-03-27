@@ -1,6 +1,7 @@
 package com.lofri.catchtable.domain.user.controller;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import com.lofri.catchtable.common.code.GenderType;
 import com.lofri.catchtable.common.dto.ResponseTemplate;
 import com.lofri.catchtable.domain.user.dto.*;
 import com.lofri.catchtable.test.config.RestDocsSupport;
@@ -29,6 +30,44 @@ class UserControllerTest extends RestDocsSupport {
 
     @MockitoBean
     private UserController userController;
+
+    @Test
+    void createUser() throws Exception {
+        // given
+        CreateUserRequest request = CreateUserRequest.builder()
+                .email("lofri97@gmail.com")
+                .password("password")
+                .nickname("nickname")
+                .contact("01090918849")
+                .gender(GenderType.MALE)
+                .build();
+
+        // when
+        when(userController.createUser(any())).thenReturn(ResponseTemplate.ok());
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+
+        // then
+        resultActions.andDo(
+                restDocs.document(resource(ResourceSnippetParameters.builder()
+                        .tag("유저")
+                        .summary("생성")
+                        .description("유저를 생성하는 API")
+                        .requestFields(
+                                fieldWithPath("email").description("로그인 email"),
+                                fieldWithPath("password").description("로그인 비밀번호"),
+                                fieldWithPath("nickname").description("닉네임").optional(),
+                                fieldWithPath("contact").description("전화번호"),
+                                fieldWithPath("gender").description("성별 [MALE, FEMALE]")
+                        )
+                        .responseFields(
+                                subsectionWithPath("status").description("응답 상태")
+                        )
+                        .build()
+                )));
+    }
 
     @Test
     void getUserTest() throws Exception {
@@ -105,6 +144,9 @@ class UserControllerTest extends RestDocsSupport {
                                 fieldWithPath("nickname").attributes(key("constraints").value("으앙")).description("닉네임 변경 정보. Null 일 경우 갱신 X").optional(),
                                 fieldWithPath("description").attributes(key("constraints").value(constrains.descriptionsForProperty("description"))).description("자기소개 변경 정보. Null 일 경우 갱신 X").optional(),
                                 fieldWithPath("region").attributes(key("constraints").value(constrains.descriptionsForProperty("region"))).description("활동지역 변경 정보. Null 일 경우 갱신 X").optional()
+                        )
+                        .responseFields(
+                                subsectionWithPath("status").description("응답 상태")
                         )
                         .build()
                 )));
@@ -279,6 +321,9 @@ class UserControllerTest extends RestDocsSupport {
                         .pathParameters(
                                 parameterWithName("userId").description("대상 유저 ID")
                         )
+                        .responseFields(
+                                subsectionWithPath("status").description("응답 상태")
+                        )
                         .build()
                 )));
     }
@@ -300,6 +345,9 @@ class UserControllerTest extends RestDocsSupport {
                         .description("로그인한 유저의 대상 유저 팔로우 취소 API")
                         .pathParameters(
                                 parameterWithName("userId").description("대상 유저 ID")
+                        )
+                        .responseFields(
+                                subsectionWithPath("status").description("응답 상태")
                         )
                         .build()
                 )));

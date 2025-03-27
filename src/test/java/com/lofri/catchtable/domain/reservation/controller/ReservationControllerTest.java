@@ -513,4 +513,102 @@ class ReservationControllerTest extends RestDocsSupport {
                         .build()
                 )));
     }
+
+    @Test
+    void getReservation() throws Exception {
+        // given
+        GetReservationResponse response = GetReservationResponse.builder()
+                .id(12312L)
+                .restaurant(GetReservationResponse.RestaurantInfo.builder()
+                        .id(3L)
+                        .name("매장매장이름이름")
+                        .image("https://test.image.url")
+                        .build())
+                .date(LocalDate.now())
+                .time(LocalTime.of(12, 0))
+                .party(GetReservationResponse.PartyInfo.builder()
+                        .adult(3)
+                        .child(3)
+                        .disabled(1)
+                        .build())
+                .menus(List.of(
+                        GetReservationResponse.MenuInfo.builder()
+                                .id(1L)
+                                .cnt(1)
+                                .build(),
+                        GetReservationResponse.MenuInfo.builder()
+                                .id(2L)
+                                .cnt(3)
+                                .build(),
+                        GetReservationResponse.MenuInfo.builder()
+                                .id(4L)
+                                .cnt(1)
+                                .build()
+                ))
+                .build();
+
+        // when
+        when(reservationController.getReservation(anyLong())).thenReturn(ResponseTemplate.ok(response));
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/reservations/{reservation_id}", 123L))
+                .andExpect(status().isOk());
+
+        // then
+        resultActions.andDo(
+                restDocs.document(resource(ResourceSnippetParameters.builder()
+                        .tag("예약")
+                        .summary("단건 조회")
+                        .description("예약 단건 조회 API")
+                        .pathParameters(
+                                parameterWithName("reservation_id").description("대상 예약 ID")
+                        )
+                        .responseFields(
+                                subsectionWithPath("status").description("응답 상태"),
+                                fieldWithPath("data.id").description("예약 ID"),
+                                fieldWithPath("data.status").description("예약 상태"),
+                                fieldWithPath("data.restaurant").description("예약 매장 정보"),
+                                fieldWithPath("data.restaurant.id").description("매장 ID"),
+                                fieldWithPath("data.restaurant.name").description("매장 이름"),
+                                fieldWithPath("data.restaurant.image").description("매장 이미지 URL"),
+                                fieldWithPath("data.accompanyIds").description("동행 유저 ID 목록").optional(),
+                                fieldWithPath("data.note").description("유저 요구사항").optional(),
+                                fieldWithPath("data.purposes").description("방문목적 목록").optional(),
+                                fieldWithPath("data.date").description("요청 일"),
+                                fieldWithPath("data.time").description("요청 시간"),
+                                fieldWithPath("data.party").description("요청 인원 정보"),
+                                fieldWithPath("data.party.adult").description("성인 인원"),
+                                fieldWithPath("data.party.child").description("아이 인원"),
+                                fieldWithPath("data.party.disabled").description("장애인 인원"),
+                                fieldWithPath("data.menus[]").description("메뉴 정보 목록"),
+                                fieldWithPath("data.menus[].id").description("메뉴 ID"),
+                                fieldWithPath("data.menus[].price").description("메뉴 가격"),
+                                fieldWithPath("data.menus[].cnt").description("수량")
+                        )
+                        .build()
+                )));
+    }
+
+    @Test
+    void deleteReservation() throws Exception {
+        // given
+
+        // when
+        when(reservationController.deleteReservation(anyLong())).thenReturn(ResponseTemplate.ok());
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/reservations/{reservation_id}", 123L))
+                .andExpect(status().isOk());
+
+        // then
+        resultActions.andDo(
+                restDocs.document(resource(ResourceSnippetParameters.builder()
+                        .tag("예약")
+                        .summary("삭제")
+                        .description("예약 삭제 API")
+                        .pathParameters(
+                                parameterWithName("reservation_id").description("대상 예약 ID")
+                        )
+                        .responseFields(
+                                subsectionWithPath("status").description("응답 상태")
+                        )
+                        .build()
+                )));
+    }
 }

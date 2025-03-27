@@ -21,12 +21,12 @@ public class CouponController {
     }
 
     @PostMapping("/{couponId}")
-    public ResponseTemplate<?> registerCoupon(@PathVariable long couponId) {
+    public ResponseTemplate<Void> registerCoupon(@PathVariable long couponId) {
         return null;
     }
 
     @DeleteMapping("/{couponId}")
-    public ResponseTemplate<?> deleteCoupon(@PathVariable long couponId) {
+    public ResponseTemplate<Void> deleteCoupon(@PathVariable long couponId) {
         return null;
     }
 }

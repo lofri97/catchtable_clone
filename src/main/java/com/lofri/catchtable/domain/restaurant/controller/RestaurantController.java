@@ -1,9 +1,7 @@
 package com.lofri.catchtable.domain.restaurant.controller;
 
 import com.lofri.catchtable.common.dto.ResponseTemplate;
-import com.lofri.catchtable.domain.menu.MenuDetail;
 import com.lofri.catchtable.domain.restaurant.dto.*;
-import com.lofri.catchtable.domain.review.dto.ReviewInfo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,24 +48,6 @@ public class RestaurantController {
     public ResponseTemplate<GetRestaurantAnnouncements> getRestaurantAnnouncements(@PathVariable long restId,
                                                                                          @RequestParam(name = "page_index", defaultValue = "1") int pageIndex,
                                                                                          @RequestParam(name = "page_size", defaultValue = "20") int pageSize) {
-        return null;
-    }
-
-    @GetMapping("/{restId}/menus")
-    public RestaurantMenuInfo getRestaurantMenus(@PathVariable long restId) {
-        return null;
-    }
-
-    @GetMapping("/{restId}/menus/{menuId}")
-    public MenuDetail getRestaurantMenu(@PathVariable long restId,
-                                        @PathVariable long menuId) {
-        return null;
-    }
-
-    @GetMapping("/{restId}/reviews")
-    public ReviewInfo retrieveReviewInfo(@PathVariable long restId,
-                                         @RequestParam(defaultValue = "ALL") String type,
-                                         @RequestParam(defaultValue = "BEST") String orderBy) {
         return null;
     }
 

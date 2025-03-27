@@ -13,13 +13,10 @@ import lombok.Getter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseTemplate<T> {
     private Status status;
-
-    @Schema(description = "응답 데이터")
     private T data;
 
     @Getter
     @AllArgsConstructor
-    @Schema(description = "응답 상태")
     public static class Status {
 
         @Schema(name = "상태 코드")

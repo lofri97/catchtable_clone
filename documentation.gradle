@@ -22,6 +22,12 @@ openapi3 {
 }
 
 
+
+tasks.named('asciidoctor') {
+    dependsOn test
+    inputs.dir snippetsDir
+}
+
 def groupName = "redoc_documentation"
 
 tasks.register('openapifix', Exec) {
@@ -49,12 +55,5 @@ tasks.register('generateRestDocRedocly', Exec) {
     group groupName
     dependsOn openapifix
     commandLine 'cmd', '/c', 'npx', '@redocly/cli', 'build-docs', './build/api-spec/openapi-fixed.yaml', '-o', 'src/main/resources/static/docs.html'
-}
-
-tasks.register('generateOpenApiRedocly', Exec) {
-    group groupName
-    dependsOn('clean')
-    dependsOn('generateOpenApiDocs')
-    commandLine 'cmd', '/c', 'npx', '@redocly/cli', 'build-docs', './build/openapi.json', '-o', 'src/main/resources/static/docs.html'
 }
 
