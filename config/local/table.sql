@@ -6,7 +6,7 @@ CREATE TABLE `announcement` (
 );
 
 CREATE TABLE `terms` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `type` ENUM ('TERMS_OF_USE', 'PRIVACY_POLICY', 'LOCATION_INFORMATION') NOT NULL,
   `created_at` datetime NOT NULL DEFAULT (now()),
   `modified_at` datetime NOT NULL DEFAULT (now())
@@ -19,9 +19,9 @@ CREATE TABLE `user_terms` (
 );
 
 CREATE TABLE `user` (
-  `id` bigint PRIMARY KEY,
+  `id` bigint AUTO_INCREMENT PRIMARY KEY,
   `email` varchar(255) UNIQUE NOT NULL COMMENT '로그인 email',
-  `password` char NOT NULL,
+  `password` varchar(255) NOT NULL,
   `nickname` varchar(255) UNIQUE NOT NULL,
   `description` varchar(255),
   `gender` ENUM ('MALE', 'FEMALE'),

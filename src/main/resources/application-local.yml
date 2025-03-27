@@ -2,12 +2,21 @@ spring:
   config:
     activate:
       on-profile: local
+
   datasource:
     url: jdbc:mysql://localhost:3307/catch_table
     username: developer
     password: 12345
-
   jpa:
     hibernate:
       ddl-auto: none
       show-sql: true
+
+  autoconfigure:
+    exclude:
+      org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+logging:
+  level:
+    com:
+      lofri: DEBUG

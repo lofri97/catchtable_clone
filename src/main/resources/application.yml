@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: Catchtable
+  mvc:
+    locale: en
   profiles:
     active: local
   jpa:
