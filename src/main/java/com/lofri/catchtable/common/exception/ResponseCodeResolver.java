@@ -14,7 +14,7 @@ public class ResponseCodeResolver {
 
     private final Map<Class<? extends Exception>, ResponseCode> cache;
 
-    private ResponseCodeResolver() {
+    public ResponseCodeResolver() {
         this.cache = new HashMap<>();
 
         for (ResponseCode responseCode : ResponseCode.values()) {
