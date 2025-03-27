@@ -37,7 +37,6 @@ class UserControllerTest extends RestDocsSupport {
         CreateUserRequest request = CreateUserRequest.builder()
                 .email("lofri97@gmail.com")
                 .password("password")
-                .nickname("nickname")
                 .contact("01090918849")
                 .gender(GenderType.MALE)
                 .build();
@@ -58,7 +57,6 @@ class UserControllerTest extends RestDocsSupport {
                         .requestFields(
                                 fieldWithPath("email").description("로그인 email"),
                                 fieldWithPath("password").description("로그인 비밀번호"),
-                                fieldWithPath("nickname").description("닉네임").optional(),
                                 fieldWithPath("contact").description("전화번호"),
                                 fieldWithPath("gender").description("성별 [MALE, FEMALE]")
                         )
