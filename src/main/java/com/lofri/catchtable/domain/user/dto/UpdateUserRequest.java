@@ -1,6 +1,7 @@
 package com.lofri.catchtable.domain.user.dto;
 
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
@@ -12,7 +13,8 @@ import org.hibernate.validator.constraints.Length;
 public class UpdateUserRequest {
 
     @Nullable
-    @Length(max = 15)
+    @NotBlank
+    @Length(min = 2, max = 15)
     private String nickname;
 
     @Nullable

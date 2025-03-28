@@ -24,6 +24,7 @@ CREATE TABLE `user` (
   `password` varchar(255) NOT NULL,
   `nickname` varchar(255) UNIQUE NOT NULL,
   `description` varchar(255),
+  `region` varchar(255),
   `gender` ENUM ('MALE', 'FEMALE'),
   `contact` varchar(255) UNIQUE NOT NULL,
   `contact_verified` bool NOT NULL,
@@ -345,6 +346,8 @@ CREATE UNIQUE INDEX `reservation_menu_index_13` ON `reservation_menu` (`id`, `me
 CREATE UNIQUE INDEX `reservation_accompany_index_14` ON `reservation_accompany` (`id`, `accompany_id`);
 
 CREATE UNIQUE INDEX `restaurant_amenity_index_15` ON `restaurant_amenity` (`restaurant_id`, `amenity_id`);
+
+CREATE UNIQUE INDEX `user_index_16` ON `user` (`nickname`);
 
 ALTER TABLE `reservation_accompany` COMMENT = '예약 함께 방문';
 
