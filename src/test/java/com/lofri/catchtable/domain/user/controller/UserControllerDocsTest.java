@@ -26,7 +26,7 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
-class UserControllerTest extends RestDocsSupport {
+class UserControllerDocsTest extends RestDocsSupport {
 
     @MockitoBean
     private UserController userController;
@@ -123,7 +123,7 @@ class UserControllerTest extends RestDocsSupport {
         ConstraintDescriptions constrains = new ConstraintDescriptions(UpdateUserRequest.class);
 
         // when
-        when(userController.updateUser(request)).thenReturn(ResponseTemplate.ok());
+        when(userController.updateUser(123L, request)).thenReturn(ResponseTemplate.ok());
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/users/{userId}", 123L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
