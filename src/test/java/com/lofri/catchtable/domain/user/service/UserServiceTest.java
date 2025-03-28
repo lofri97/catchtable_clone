@@ -1,6 +1,7 @@
 package com.lofri.catchtable.domain.user.service;
 
 import com.lofri.catchtable.common.code.GenderType;
+import com.lofri.catchtable.domain.user.dto.UserDto;
 import com.lofri.catchtable.domain.user.exception.DuplicateEmailException;
 import com.lofri.catchtable.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -9,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -60,5 +63,39 @@ class UserServiceTest {
             }
         }
 
+    }
+
+    @Nested
+    class GetUser {
+        Long userId = 1L;
+
+        @Nested
+        class Success {
+            @Test
+            @DisplayName("User exist")
+            void success001() {
+                // given
+                given(userRepository.findByIdContainsFollowCnt(userId)).willReturn(Optional.of(Mockito.mock(UserDto.class)));
+
+                // when && then
+                assertThatCode(() -> userService.getUser(userId)).doesNotThrowAnyException();
+            }
+        }
+
+        @Nested
+        class Fail {
+
+            @Test
+            @DisplayName("User not exist")
+            void fail001() {
+                // given
+                given(userRepository.findByIdContainsFollowCnt(userId)).willReturn(Optional.empty());
+
+                // when && then
+                assertThatThrownBy(() -> userService.getUser(userId))
+                        .isInstanceOf(RuntimeException.class);
+            }
+
+        }
     }
 }

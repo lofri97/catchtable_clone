@@ -1,6 +1,7 @@
 package com.lofri.catchtable.domain.user.service;
 
 import com.lofri.catchtable.common.code.GenderType;
+import com.lofri.catchtable.domain.user.dto.UserDto;
 import com.lofri.catchtable.domain.user.entity.User;
 import com.lofri.catchtable.domain.user.exception.DuplicateEmailException;
 import com.lofri.catchtable.domain.user.repository.UserRepository;
@@ -29,5 +30,9 @@ public class UserService {
                 .build();
 
         userRepository.save(user);
+    }
+
+    public UserDto getUser(Long userId) {
+        return userRepository.findByIdContainsFollowCnt(userId).orElseThrow(() -> new RuntimeException()); // Todo UserNotFoundException 사용
     }
 }
