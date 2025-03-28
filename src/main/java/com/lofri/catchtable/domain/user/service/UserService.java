@@ -7,10 +7,10 @@ import com.lofri.catchtable.domain.user.exception.DuplicateNicknameException;
 import com.lofri.catchtable.domain.user.exception.UserNotFoundException;
 import com.lofri.catchtable.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -37,20 +37,12 @@ public class UserService {
     public void updateUser(Long id, String nickname, String description, String region) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
 
-        if (Objects.nonNull(nickname)) {
-            if (!user.getNickname().equals(nickname) && userRepository.existsByNickname(nickname)) {
-                throw new DuplicateNicknameException(nickname);
-            }
-            user.updateNickname(nickname);
+        if (!StringUtils.equals(user.getNickname(), nickname) && userRepository.existsByNickname(nickname)) {
+            throw new DuplicateNicknameException(nickname);
         }
-
-        if (Objects.nonNull(description)) {
-            user.updateDescription(description);
-        }
-
-        if (Objects.nonNull(region)) {
-            user.updateRegion(region);
-        }
+        user.updateNickname(nickname);
+        user.updateDescription(description);
+        user.updateRegion(region);
         userRepository.save(user);
     }
 }

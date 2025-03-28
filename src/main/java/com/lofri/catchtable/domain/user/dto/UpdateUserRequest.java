@@ -12,7 +12,6 @@ import org.hibernate.validator.constraints.Length;
 @EqualsAndHashCode
 public class UpdateUserRequest {
 
-    @Nullable
     @NotBlank
     @Length(min = 2, max = 15)
     private String nickname;
