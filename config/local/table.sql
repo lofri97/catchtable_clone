@@ -28,6 +28,7 @@ CREATE TABLE `user` (
   `contact` varchar(255) UNIQUE NOT NULL,
   `contact_verified` bool NOT NULL,
   `image_id` bigint,
+  `deleted` bool NOT NULL DEFAULT (true)
   `created_at` datetime NOT NULL DEFAULT (now()),
   `modified_at` datetime NOT NULL DEFAULT (now())
 );

@@ -1,6 +1,7 @@
 package com.lofri.catchtable.domain.user.service;
 
 import com.lofri.catchtable.common.code.GenderType;
+import com.lofri.catchtable.domain.user.entity.User;
 import com.lofri.catchtable.domain.user.exception.DuplicateEmailException;
 import com.lofri.catchtable.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +11,11 @@ import org.mockito.Mockito;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.assertj.core.api.Assertions.*;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 class UserServiceTest {
@@ -60,5 +65,37 @@ class UserServiceTest {
             }
         }
 
+    }
+
+    @Nested
+    class DeleteUser {
+        @Nested
+        class Success {
+            @Test
+            @DisplayName("User exist")
+            void success001() {
+                // given
+                given(userRepository.findById(1L)).willReturn(Optional.of(Mockito.mock(User.class)));
+
+                // when && then
+                assertThatCode(() -> userService.deleteUser(1L))
+                        .doesNotThrowAnyException();
+            }
+        }
+
+        @Nested
+        class Fail {
+
+            @Test
+            @DisplayName("User not exist")
+            void fail001() {
+                // given
+                given(userRepository.existsByEmail(any())).willReturn(false);
+
+                // when && then
+                assertThatThrownBy(() -> userService.deleteUser(1L))
+                        .isInstanceOf(RuntimeException.class);
+            }
+        }
     }
 }
