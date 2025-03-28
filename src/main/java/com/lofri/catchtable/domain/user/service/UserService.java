@@ -30,4 +30,9 @@ public class UserService {
 
         userRepository.save(user);
     }
+
+    public void deleteUser(Long userId) {
+        if (!userRepository.existsById(userId)) throw new RuntimeException(); // Todo UserNotFound Exception 사용하기
+        userRepository.deleteById(userId);
+    }
 }

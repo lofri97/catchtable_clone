@@ -35,6 +35,12 @@ public class UserController {
         return null;
     }
 
+    @DeleteMapping("/{userId}")
+    public ResponseTemplate<Void> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
+        return ResponseTemplate.ok();
+    }
+
     @PostMapping("/{userId}/follow")
     public ResponseTemplate<Void> followUser(@PathVariable long userId) {
         return null;

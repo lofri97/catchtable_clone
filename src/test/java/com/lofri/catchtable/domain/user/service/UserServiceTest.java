@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 class UserServiceTest {
@@ -60,5 +61,37 @@ class UserServiceTest {
             }
         }
 
+    }
+
+    @Nested
+    class DeleteUser {
+        @Nested
+        class Success {
+            @Test
+            @DisplayName("User exist")
+            void success001() {
+                // given
+                given(userRepository.existsById(1L)).willReturn(true);
+
+                // when && then
+                assertThatCode(() -> userService.deleteUser(1L))
+                        .doesNotThrowAnyException();
+            }
+        }
+
+        @Nested
+        class Fail {
+
+            @Test
+            @DisplayName("User not exist")
+            void fail001() {
+                // given
+                given(userRepository.existsByEmail(any())).willReturn(false);
+
+                // when && then
+                assertThatThrownBy(() -> userService.deleteUser(1L))
+                        .isInstanceOf(RuntimeException.class);
+            }
+        }
     }
 }

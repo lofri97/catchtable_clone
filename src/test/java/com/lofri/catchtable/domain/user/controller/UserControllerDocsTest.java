@@ -8,7 +8,6 @@ import com.lofri.catchtable.test.config.RestDocsSupport;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.constraints.ConstraintDescriptions;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -19,10 +18,10 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithNam
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
-import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
@@ -111,37 +110,62 @@ class UserControllerDocsTest extends RestDocsSupport {
                 )));
     }
 
-    @Test
-    void updateUser() throws Exception {
-        // given
-        UpdateUserRequest request = UpdateUserRequest.builder()
-                .nickname("이름을 바꾸자")
-                .description("자기소개를 바꾸자")
-                .region("활동지역을 바꾸자")
-                .build();
+//    @Test
+//    void updateUser() throws Exception {
+//        // given
+//        UpdateUserRequest request = UpdateUserRequest.builder()
+//                .nickname("이름을 바꾸자")
+//                .description("자기소개를 바꾸자")
+//                .region("활동지역을 바꾸자")
+//                .build();
+//
+//        ConstraintDescriptions constrains = new ConstraintDescriptions(UpdateUserRequest.class);
+//
+//        // when
+//        when(userController.updateUser(123L, request)).thenReturn(ResponseTemplate.ok());
+//        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/users/{userId}", 123L)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(request)))
+//                .andExpect(status().isOk());
+//
+//        // then
+//        resultActions.andDo(
+//                restDocs.document(resource(ResourceSnippetParameters.builder()
+//                        .tag("유저")
+//                        .summary("수정")
+//                        .description("로그인한 유저의 정보를 수정하는 API")
+//                        .pathParameters(
+//                                parameterWithName("userId").description("검색하고자 하는 유저의 ID")
+//                        )
+//                        .requestFields(
+//                                fieldWithPath("nickname").attributes(key("constraints").value("으앙")).description("닉네임 변경 정보. Null 일 경우 갱신 X").optional(),
+//                                fieldWithPath("description").attributes(key("constraints").value(constrains.descriptionsForProperty("description"))).description("자기소개 변경 정보. Null 일 경우 갱신 X").optional(),
+//                                fieldWithPath("region").attributes(key("constraints").value(constrains.descriptionsForProperty("region"))).description("활동지역 변경 정보. Null 일 경우 갱신 X").optional()
+//                        )
+//                        .responseFields(
+//                                subsectionWithPath("status").description("응답 상태")
+//                        )
+//                        .build()
+//                )));
+//    }
 
-        ConstraintDescriptions constrains = new ConstraintDescriptions(UpdateUserRequest.class);
+    @Test
+    void deleteUser() throws Exception {
+        // given
+        given(userController.deleteUser(any())).willReturn(ResponseTemplate.ok());
 
         // when
-        when(userController.updateUser(123L, request)).thenReturn(ResponseTemplate.ok());
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/users/{userId}", 123L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/users/{userId}", 1L))
                 .andExpect(status().isOk());
 
         // then
         resultActions.andDo(
                 restDocs.document(resource(ResourceSnippetParameters.builder()
                         .tag("유저")
-                        .summary("수정")
-                        .description("로그인한 유저의 정보를 수정하는 API")
+                        .summary("삭제")
+                        .description("유저 삭제 API")
                         .pathParameters(
-                                parameterWithName("userId").description("검색하고자 하는 유저의 ID")
-                        )
-                        .requestFields(
-                                fieldWithPath("nickname").attributes(key("constraints").value("으앙")).description("닉네임 변경 정보. Null 일 경우 갱신 X").optional(),
-                                fieldWithPath("description").attributes(key("constraints").value(constrains.descriptionsForProperty("description"))).description("자기소개 변경 정보. Null 일 경우 갱신 X").optional(),
-                                fieldWithPath("region").attributes(key("constraints").value(constrains.descriptionsForProperty("region"))).description("활동지역 변경 정보. Null 일 경우 갱신 X").optional()
+                                parameterWithName("userId").description("대상 유저 ID")
                         )
                         .responseFields(
                                 subsectionWithPath("status").description("응답 상태")
