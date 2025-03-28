@@ -43,6 +43,12 @@ public class User extends BaseEntity {
     @JoinColumn(name = "image_id")
     private Image image;
 
+    @Transient
+    private Long followingCnt;
+
+    @Transient
+    private Long followerCnt;
+
     @Builder
     private User(String email, String password, String nickname, GenderType gender, String contact) {
         this.email = email;

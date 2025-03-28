@@ -26,8 +26,9 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseTemplate<GetUserResponse> getUser(@PathVariable long userId) {
-        return null;
+    public ResponseTemplate<GetUserResponse> getUser(@PathVariable Long userId) {
+        UserDto userDto = userService.getUser(userId);
+        return ResponseTemplate.ok(GetUserResponse.of(userDto));
     }
 
     @PutMapping("/{userId}")

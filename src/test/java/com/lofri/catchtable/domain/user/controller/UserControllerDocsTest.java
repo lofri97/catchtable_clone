@@ -76,8 +76,8 @@ class UserControllerDocsTest extends RestDocsSupport {
                 .image("https://test.image.url")
                 .name("가나다라")
                 .description("안녕하세요")
-                .followerCnt(3)
-                .followingCnt(0)
+                .followerCnt(3L)
+                .followingCnt(0L)
                 .avgRate(4.3f)
                 .preferences(List.of("선호목록1", "선호목록2"))
                 .build();
