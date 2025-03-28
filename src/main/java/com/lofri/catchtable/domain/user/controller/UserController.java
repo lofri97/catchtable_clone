@@ -14,7 +14,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping()
+    @PostMapping
     public ResponseTemplate<Void> createUser(@Valid @RequestBody CreateUserRequest request) {
         userService.createUser(
                 request.getEmail(),
@@ -22,7 +22,7 @@ public class UserController {
                 request.getContact(),
                 request.getGender()
         );
-        return null;
+        return ResponseTemplate.ok();
     }
 
     @GetMapping("/{userId}")
