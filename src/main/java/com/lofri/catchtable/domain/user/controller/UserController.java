@@ -2,6 +2,7 @@ package com.lofri.catchtable.domain.user.controller;
 
 import com.lofri.catchtable.common.dto.ResponseTemplate;
 import com.lofri.catchtable.domain.user.dto.*;
+import com.lofri.catchtable.domain.user.entity.User;
 import com.lofri.catchtable.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +27,9 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseTemplate<GetUserResponse> getUser(@PathVariable long userId) {
-        return null;
+    public ResponseTemplate<GetUserResponse> getUser(@PathVariable Long userId) {
+        User user = userService.getUser(userId);
+        return ResponseTemplate.ok(GetUserResponse.of(user));
     }
 
     @PutMapping("/{userId}")
