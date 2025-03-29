@@ -26,7 +26,7 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
-class UserControllerTest extends RestDocsSupport {
+class UserControllerDocsTest extends RestDocsSupport {
 
     @MockitoBean
     private UserController userController;
@@ -37,7 +37,6 @@ class UserControllerTest extends RestDocsSupport {
         CreateUserRequest request = CreateUserRequest.builder()
                 .email("lofri97@gmail.com")
                 .password("password")
-                .nickname("nickname")
                 .contact("01090918849")
                 .gender(GenderType.MALE)
                 .build();
@@ -58,7 +57,6 @@ class UserControllerTest extends RestDocsSupport {
                         .requestFields(
                                 fieldWithPath("email").description("로그인 email"),
                                 fieldWithPath("password").description("로그인 비밀번호"),
-                                fieldWithPath("nickname").description("닉네임").optional(),
                                 fieldWithPath("contact").description("전화번호"),
                                 fieldWithPath("gender").description("성별 [MALE, FEMALE]")
                         )
@@ -125,7 +123,7 @@ class UserControllerTest extends RestDocsSupport {
         ConstraintDescriptions constrains = new ConstraintDescriptions(UpdateUserRequest.class);
 
         // when
-        when(userController.updateUser(request)).thenReturn(ResponseTemplate.ok());
+        when(userController.updateUser(123L, request)).thenReturn(ResponseTemplate.ok());
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/users/{userId}", 123L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))

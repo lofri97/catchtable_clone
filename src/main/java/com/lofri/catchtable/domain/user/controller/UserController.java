@@ -2,15 +2,26 @@ package com.lofri.catchtable.domain.user.controller;
 
 import com.lofri.catchtable.common.dto.ResponseTemplate;
 import com.lofri.catchtable.domain.user.dto.*;
+import com.lofri.catchtable.domain.user.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/v1/users")
+@RequiredArgsConstructor
 public class UserController {
 
+    private final UserService userService;
+
     @PostMapping()
-    public ResponseTemplate<Void> createUser(@RequestBody CreateUserRequest request) {
+    public ResponseTemplate<Void> createUser(@Valid @RequestBody CreateUserRequest request) {
+        userService.createUser(
+                request.getEmail(),
+                request.getPassword(),
+                request.getContact(),
+                request.getGender()
+        );
         return null;
     }
 
