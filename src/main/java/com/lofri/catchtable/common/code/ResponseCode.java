@@ -1,6 +1,8 @@
 package com.lofri.catchtable.common.code;
 
 import com.lofri.catchtable.domain.user.exception.DuplicateEmailException;
+import com.lofri.catchtable.domain.user.exception.DuplicateNicknameException;
+import com.lofri.catchtable.domain.user.exception.UserNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,18 @@ public enum ResponseCode {
             HttpStatus.BAD_REQUEST,
             new Class[]{
             DuplicateEmailException.class}),
+
+    C200_001("Duplicate nickname",
+            HttpStatus.BAD_REQUEST,
+            new Class[] {
+                    DuplicateNicknameException.class
+            }),
+
+    C200_002("User not found",
+            HttpStatus.NOT_FOUND,
+            new Class[] {
+                    UserNotFoundException.class
+            }),
 
     // Internal
     C500_000("Internal server error",

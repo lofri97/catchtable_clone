@@ -31,8 +31,15 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseTemplate<Void> updateUser(@Valid @RequestBody UpdateUserRequest request) {
-        return null;
+    public ResponseTemplate<Void> updateUser(@PathVariable Long userId,
+                                             @Valid @RequestBody UpdateUserRequest request) {
+        userService.updateUser(
+                userId,
+                request.getNickname(),
+                request.getDescription(),
+                request.getRegion()
+        );
+        return ResponseTemplate.ok();
     }
 
     @PostMapping("/{userId}/follow")
