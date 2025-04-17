@@ -30,8 +30,14 @@ public class UserService {
 
         userRepository.save(user);
     }
-
+  
+  
     public User getUser(Long userId) {
         return userRepository.findByIdContainsFollowCnt(userId).orElseThrow(() -> new RuntimeException()); // Todo UserNotFoundException 사용
+    }
+
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // Todo Exception 정의
+        userRepository.delete(user);
     }
 }

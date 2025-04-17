@@ -8,9 +8,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
+@SQLDelete(sql = "UPDATE user SET deleted = true WHERE id = ?")
+@SQLRestriction("deleted = false")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class User extends BaseEntity {
 

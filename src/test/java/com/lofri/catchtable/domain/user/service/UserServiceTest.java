@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 class UserServiceTest {
@@ -67,9 +68,42 @@ class UserServiceTest {
     }
 
     @Nested
+    class DeleteUser {
+      
+        @Nested
+        class Success {
+            @Test
+            @DisplayName("User exist")
+            void success001() {
+                // given
+                given(userRepository.findById(1L)).willReturn(Optional.of(Mockito.mock(User.class)));
+
+                // when && then
+                assertThatCode(() -> userService.deleteUser(1L))
+                        .doesNotThrowAnyException();
+            }
+        }
+
+        @Nested
+        class Fail {
+
+            @Test
+            @DisplayName("User not exist")
+            void fail001() {
+                // given
+                given(userRepository.existsByEmail(any())).willReturn(false);
+
+                // when && then
+                assertThatThrownBy(() -> userService.deleteUser(1L))
+                        .isInstanceOf(RuntimeException.class);
+            }
+        }
+    }
+          
+    @Nested
     class GetUser {
         Long userId = 1L;
-
+      
         @Nested
         class Success {
             @Test
@@ -96,7 +130,6 @@ class UserServiceTest {
                 assertThatThrownBy(() -> userService.getUser(userId))
                         .isInstanceOf(RuntimeException.class);
             }
-
         }
     }
 }
