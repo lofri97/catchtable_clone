@@ -69,6 +69,7 @@ class UserServiceTest {
 
     @Nested
     class DeleteUser {
+      
         @Nested
         class Success {
             @Test
@@ -94,6 +95,39 @@ class UserServiceTest {
 
                 // when && then
                 assertThatThrownBy(() -> userService.deleteUser(1L))
+                        .isInstanceOf(RuntimeException.class);
+            }
+        }
+    }
+          
+    @Nested
+    class GetUser {
+        Long userId = 1L;
+      
+        @Nested
+        class Success {
+            @Test
+            @DisplayName("User exist")
+            void success001() {
+                // given
+                given(userRepository.findByIdContainsFollowCnt(userId)).willReturn(Optional.of(Mockito.mock(User.class)));
+
+                // when && then
+                assertThatCode(() -> userService.getUser(userId)).doesNotThrowAnyException();
+            }
+        }
+
+        @Nested
+        class Fail {
+
+            @Test
+            @DisplayName("User not exist")
+            void fail001() {
+                // given
+                given(userRepository.findByIdContainsFollowCnt(userId)).willReturn(Optional.empty());
+
+                // when && then
+                assertThatThrownBy(() -> userService.getUser(userId))
                         .isInstanceOf(RuntimeException.class);
             }
         }
