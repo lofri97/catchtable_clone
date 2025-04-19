@@ -2,26 +2,52 @@ package com.lofri.catchtable.domain.user.controller;
 
 import com.lofri.catchtable.common.dto.ResponseTemplate;
 import com.lofri.catchtable.domain.user.dto.*;
+import com.lofri.catchtable.domain.user.entity.User;
+import com.lofri.catchtable.domain.user.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/v1/users")
+@RequiredArgsConstructor
 public class UserController {
 
-    @PostMapping()
-    public ResponseTemplate<Void> createUser(@RequestBody CreateUserRequest request) {
-        return null;
+    private final UserService userService;
+
+    @PostMapping
+    public ResponseTemplate<Void> createUser(@Valid @RequestBody CreateUserRequest request) {
+        userService.createUser(
+                request.getEmail(),
+                request.getPassword(),
+                request.getContact(),
+                request.getGender()
+        );
+        return ResponseTemplate.ok();
     }
 
     @GetMapping("/{userId}")
-    public ResponseTemplate<GetUserResponse> getUser(@PathVariable long userId) {
-        return null;
+    public ResponseTemplate<GetUserResponse> getUser(@PathVariable Long userId) {
+        User user = userService.getUser(userId);
+        return ResponseTemplate.ok(GetUserResponse.of(user));
     }
 
     @PutMapping("/{userId}")
-    public ResponseTemplate<Void> updateUser(@Valid @RequestBody UpdateUserRequest request) {
-        return null;
+    public ResponseTemplate<Void> updateUser(@PathVariable Long userId,
+                                             @Valid @RequestBody UpdateUserRequest request) {
+        userService.updateUser(
+                userId,
+                request.getNickname(),
+                request.getDescription(),
+                request.getRegion()
+        );
+        return ResponseTemplate.ok();
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseTemplate<Void> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
+        return ResponseTemplate.ok();
     }
 
     @PostMapping("/{userId}/follow")
