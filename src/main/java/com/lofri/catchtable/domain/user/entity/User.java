@@ -32,6 +32,9 @@ public class User extends BaseEntity {
     private String nickname;
 
     @Column
+    private String region;
+
+    @Column
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -63,6 +66,18 @@ public class User extends BaseEntity {
         this.contactVerified = false;
     }
 
+    public void updateDescription(String description) {
+        this.description = description;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateRegion(String region) {
+        this.region = region;
+    }
+  
     public User(Long id,
                    String email,
                    String nickname,

@@ -3,6 +3,8 @@ package com.lofri.catchtable.domain.user.service;
 import com.lofri.catchtable.common.code.GenderType;
 import com.lofri.catchtable.domain.user.entity.User;
 import com.lofri.catchtable.domain.user.exception.DuplicateEmailException;
+import com.lofri.catchtable.domain.user.exception.DuplicateNicknameException;
+import com.lofri.catchtable.domain.user.exception.UserNotFoundException;
 import com.lofri.catchtable.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -10,6 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.Optional;
 
 import java.util.Optional;
 
@@ -64,7 +69,72 @@ class UserServiceTest {
 
             }
         }
+    }
 
+    @Nested
+    class UpdateUser {
+        Long id = 1L;
+
+        @Nested
+        class Success {
+            String afterNickname = "TestNickname";
+            String afterDescription = "TestDescription";
+            String afterRegion = "TestRegion";
+
+            @Test
+            @DisplayName("Update nickname")
+            void success001() {
+                // given
+                User user = User.builder()
+                        .nickname("aaaaaa")
+                        .build();
+
+                ReflectionTestUtils.setField(user, "id", id);
+                ReflectionTestUtils.setField(user, "nickname", afterNickname);
+                ReflectionTestUtils.setField(user, "description", afterDescription);
+                ReflectionTestUtils.setField(user, "region", afterRegion);
+
+                given(userRepository.findById(id)).willReturn(Optional.of(user));
+
+                // when
+                userService.updateUser(id, afterNickname, afterDescription, afterRegion);
+
+                // then
+                assertThat(user)
+                        .extracting(User::getNickname, User::getDescription, User::getRegion)
+                        .containsExactly(afterNickname, afterDescription, afterRegion);
+            }
+        }
+
+        @Nested
+        class Fail {
+            Long id = 1L;
+
+            @Test
+            @DisplayName("User not found")
+            void fail001() {
+                // given
+                given(userRepository.findById(id)).willReturn(Optional.empty());
+
+                // when && then
+                assertThatThrownBy(() -> userService.updateUser(id, null, null, null))
+                        .isInstanceOf(UserNotFoundException.class);
+            }
+
+            @Test
+            @DisplayName("Duplicate nickname")
+            void fail002() {
+                // given
+                String beforeNickname = "TestNickname";
+                String afterNickname = "AfterNickname";
+                given(userRepository.findById(id)).willReturn(Optional.of(User.builder().nickname(beforeNickname).build()));
+                given(userRepository.existsByNickname(afterNickname)).willReturn(true);
+
+                // when && then
+                assertThatThrownBy(() -> userService.updateUser(id, afterNickname, null, null))
+                        .isInstanceOf(DuplicateNicknameException.class);
+            }
+        }
     }
 
     @Nested
