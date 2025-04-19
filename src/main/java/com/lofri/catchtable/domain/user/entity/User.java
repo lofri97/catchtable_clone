@@ -8,9 +8,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
+@SQLDelete(sql = "UPDATE user SET deleted = true WHERE id = ?")
+@SQLRestriction("deleted = false")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class User extends BaseEntity {
 
@@ -46,6 +50,12 @@ public class User extends BaseEntity {
     @JoinColumn(name = "image_id")
     private Image image;
 
+    @Transient
+    private Long followingCnt;
+
+    @Transient
+    private Long followerCnt;
+
     @Builder
     private User(String email, String password, String nickname, GenderType gender, String contact) {
         this.email = email;
@@ -66,5 +76,27 @@ public class User extends BaseEntity {
 
     public void updateRegion(String region) {
         this.region = region;
+    }
+  
+    public User(Long id,
+                   String email,
+                   String nickname,
+                   String description,
+                   GenderType gender,
+                   String contact,
+                   Boolean contactVerified,
+                   Image image,
+                   Long followingCnt,
+                   Long followerCnt) {
+        this.id = id;
+        this.email = email;
+        this.nickname = nickname;
+        this.description = description;
+        this.gender = gender;
+        this.contact = contact;
+        this.contactVerified = contactVerified;
+        this.image = image;
+        this.followingCnt = followingCnt;
+        this.followerCnt = followerCnt;
     }
 }

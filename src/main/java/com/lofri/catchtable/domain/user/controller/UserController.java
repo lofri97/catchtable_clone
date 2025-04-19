@@ -2,6 +2,7 @@ package com.lofri.catchtable.domain.user.controller;
 
 import com.lofri.catchtable.common.dto.ResponseTemplate;
 import com.lofri.catchtable.domain.user.dto.*;
+import com.lofri.catchtable.domain.user.entity.User;
 import com.lofri.catchtable.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping()
+    @PostMapping
     public ResponseTemplate<Void> createUser(@Valid @RequestBody CreateUserRequest request) {
         userService.createUser(
                 request.getEmail(),
@@ -22,12 +23,13 @@ public class UserController {
                 request.getContact(),
                 request.getGender()
         );
-        return null;
+        return ResponseTemplate.ok();
     }
 
     @GetMapping("/{userId}")
-    public ResponseTemplate<GetUserResponse> getUser(@PathVariable long userId) {
-        return null;
+    public ResponseTemplate<GetUserResponse> getUser(@PathVariable Long userId) {
+        User user = userService.getUser(userId);
+        return ResponseTemplate.ok(GetUserResponse.of(user));
     }
 
     @PutMapping("/{userId}")
@@ -39,6 +41,12 @@ public class UserController {
                 request.getDescription(),
                 request.getRegion()
         );
+        return ResponseTemplate.ok();
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseTemplate<Void> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
         return ResponseTemplate.ok();
     }
 
