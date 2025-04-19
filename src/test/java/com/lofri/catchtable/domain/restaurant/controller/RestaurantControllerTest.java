@@ -54,8 +54,8 @@ class RestaurantControllerTest extends RestDocsSupport {
                                                 .cnt(384)
                                                 .build())
                                         .region("합정")
-                                        .type("스테이크 & 립")
-                                        .isSubscribed(true)
+                                        .types(List.of("스테이크", "립"))
+                                        .bookmark(true)
                                         .workHour(GetRestaurantsResponse.RestaurantInformation.WorkHour.builder()
                                                 .open(LocalTime.of(12, 0))
                                                 .close(LocalTime.of(22, 0))
@@ -97,8 +97,8 @@ class RestaurantControllerTest extends RestDocsSupport {
                                                 .cnt(269)
                                                 .build())
                                         .region("상수")
-                                        .type("한우오마카세")
-                                        .isSubscribed(false)
+                                        .types(List.of("오마카세"))
+                                        .bookmark(false)
                                         .workHour(GetRestaurantsResponse.RestaurantInformation.WorkHour.builder()
                                                 .open(LocalTime.of(17, 0))
                                                 .close(LocalTime.of(21, 0))
@@ -143,43 +143,11 @@ class RestaurantControllerTest extends RestDocsSupport {
                                         .type("ASC")
                                         .build()
                         ))
-                        .filters(List.of(
-                                Pagination.Filter.builder()
-                                        .values(List.of("마포", "공덕"))
-                                        .type("region")
-                                        .isExclude(false)
-                                        .build(),
-                                Pagination.Filter.builder()
-                                        .values(List.of("한식", "중식", "양식"))
-                                        .type("foodType")
-                                        .isExclude(false)
-                                        .build(),
-                                Pagination.Filter.builder()
-                                        .values(List.of("0"))
-                                        .type("minPrice")
-                                        .isExclude(false)
-                                        .build(),
-                                Pagination.Filter.builder()
-                                        .values(List.of("40"))
-                                        .type("maxPrice")
-                                        .isExclude(false)
-                                        .build(),
-                                Pagination.Filter.builder()
-                                        .values(List.of("HALL", "TABLE", "ROOM"))
-                                        .type("tableType")
-                                        .isExclude(false)
-                                        .build(),
-                                Pagination.Filter.builder()
-                                        .values(List.of("PARKING", "CORKAGE"))
-                                        .type("amenity")
-                                        .isExclude(false)
-                                        .build()
-                        ))
                         .build())
                 .build();
 
         // when
-        when(restaurantController.getRestaurants(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(ResponseTemplate.ok(response));
+        when(restaurantController.getRestaurants(any(), any(), any(), any(), any(), any(), any(), any(), anyInt(), anyInt(), any())).thenReturn(ResponseTemplate.ok(response));
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/restaurants")
                         .param("order_by", "RECOMMEND")
@@ -188,7 +156,8 @@ class RestaurantControllerTest extends RestDocsSupport {
                         .param("min_price", "0")
                         .param("max_price", "40")
                         .param("table_type", "HALL", "TABLE", "ROOM")
-                        .param("amenity", "PARKING", "CORKAGE"))
+                        .param("amenity", "PARKING", "CORKAGE")
+                        .header("userid","1"))
                 .andExpect(status().isOk());
 
         // then
@@ -211,9 +180,9 @@ class RestaurantControllerTest extends RestDocsSupport {
                                         subsectionWithPath("status").description("상태 정보"),
                                         fieldWithPath("data.restaurants[].id").description("가게 id"),
                                         fieldWithPath("data.restaurants[].name").description("가게 명"),
-                                        fieldWithPath("data.restaurants[].isSubscribed").description("사용자 북마크 여부"),
+                                        fieldWithPath("data.restaurants[].bookmark").description("사용자 북마크 여부"),
                                         fieldWithPath("data.restaurants[].region").description("위치"),
-                                        fieldWithPath("data.restaurants[].type").description("음식 타입"),
+                                        fieldWithPath("data.restaurants[].types").description("음식 타입"),
                                         fieldWithPath("data.restaurants[].rate").description("별점 정보"),
                                         fieldWithPath("data.restaurants[].rate.avgRate").description("평균 별점"),
                                         fieldWithPath("data.restaurants[].rate.cnt").description("등록된 별점 수"),
@@ -233,11 +202,7 @@ class RestaurantControllerTest extends RestDocsSupport {
                                         fieldWithPath("data.pagination.currentPage").description("현재 페이지 번호"),
                                         fieldWithPath("data.pagination.orders[]").description("정렬 정보"),
                                         fieldWithPath("data.pagination.orders[].value").description("정렬 값"),
-                                        fieldWithPath("data.pagination.orders[].type").description("ASC DESC"),
-                                        fieldWithPath("data.pagination.filters[]").description("필터링 정보"),
-                                        fieldWithPath("data.pagination.filters[].values[]").description("필터링 값 목록"),
-                                        fieldWithPath("data.pagination.filters[].type").description("필터링 대상 값"),
-                                        fieldWithPath("data.pagination.filters[].isExclude").description("제외인지 포함인지")
+                                        fieldWithPath("data.pagination.orders[].type").description("ASC DESC")
                                 )
                                 .build()
                         )
@@ -465,16 +430,16 @@ class RestaurantControllerTest extends RestDocsSupport {
                 )
         ));
     }
-    
+
     @Test
     void subscribeRestaurant() throws Exception {
         // given
-        
+
         // when
         when(restaurantController.subscribeRestaurant(anyLong())).thenReturn(ResponseTemplate.ok());
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/restaurants/{restaurant_id}/subscribe", 123))
                 .andExpect(status().isOk());
-        
+
         // then
         resultActions.andDo(
                 restDocs.document(resource(ResourceSnippetParameters.builder()
